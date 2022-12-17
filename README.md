@@ -1,6 +1,6 @@
 # DESCRIPTION
 
-Telegram bot to track the prices of cryptocurrencies and the current balance on the binance account. Bot notifies users of spikes and drops in monitored cryptocurrencies.
+Telegram bot to track the prices of cryptocurrencies. Bot notifies users of spikes and drops in monitored cryptocurrencies.
 
 Stack: aiogram, PostgreSQL (SQLAlchemy + asyncpg), aioschedule, aioredis.
 
