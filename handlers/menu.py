@@ -16,9 +16,15 @@ async def close(callback_query: types.CallbackQuery, state: FSMContext):
     await state.finish()
 
 
+async def back_to_menu(callback_query: types.CallbackQuery, state: FSMContext):
+    await callback_query.message.edit_text('Menu:', reply_markup=inline_kb_menu)
+    await state.finish()
+
+
 def register_menu(dp: Dispatcher):
     # message handlers
     dp.register_message_handler(send_menu, commands=['start', 'menu'], state='*', chat_type=ChatType.PRIVATE)
 
     # callback handlers
     dp.register_callback_query_handler(close, Text('close'), state='*')
+    dp.register_callback_query_handler(back_to_menu, Text('back_to_menu'), state='*')
