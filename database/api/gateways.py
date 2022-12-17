@@ -1,3 +1,7 @@
+import typing
+
+from sqlalchemy import select
+
 from database.models.user import User
 
 
@@ -32,3 +36,8 @@ class UserGateway(BaseGateway):
             user = await s.merge(User(id=chat_id, crypto_pairs=crypto_pairs))
             await s.commit()
         return user
+
+    async def get_all_users(self) -> typing.Iterable[User]:
+        async with self.session() as s:
+            users = await s.execute(select(User))
+        return users.scalars()

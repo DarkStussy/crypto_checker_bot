@@ -1,3 +1,5 @@
+import logging
+
 from aiogram import types, Dispatcher
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import Text
@@ -18,11 +20,14 @@ async def get_price(callback_query: types.CallbackQuery):
 async def enter_pair(message: types.Message, state: FSMContext):
     pair = str(message.text)
     price = (await get_price_of_pairs([pair]))[0]
-    if price:
-        await state.finish()
-        return await message.answer(f'{pair} price: {float(price):g}', reply_markup=inline_kb_close)
 
-    await message.answer('Invalid cryptocurrency pair')
+    try:
+        await message.answer(f'{pair} price: {float(price):g}', reply_markup=inline_kb_close)
+    except Exception as e:
+        logging.error(f'Error: {type(e).__name__}, file: {__file__}, line: {e.__traceback__.tb_lineno}')
+        await message.answer('There were some problems, please try again later.')
+    finally:
+        await state.finish()
 
 
 def register_get_price(dp: Dispatcher):

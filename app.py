@@ -27,7 +27,7 @@ from scheduler.start import scheduler
 async def create_engine(host: str, password: str, username: str, database: str) -> AsyncEngine:
     engine = create_async_engine(
         f'postgresql+asyncpg://{username}:{password}@{host}/'
-        f'{database}', echo=True, future=True)
+        f'{database}', echo=False, future=True)
 
     async with engine.begin() as conn:
         # await conn.run_sync(Base.metadata.drop_all)
@@ -66,7 +66,7 @@ async def main():
     await set_default_commands(dp)
     await notify_admins(dp, config.bot.admins)
 
-    asyncio.create_task(scheduler())
+    asyncio.create_task(scheduler(bot, db_session))
 
     # start
     try:
