@@ -12,9 +12,11 @@ from utils.functions import get_price_of_pairs
 
 async def track_prices(callback_query: types.CallbackQuery, gateway: Gateway):
     user = await gateway.user.get_by_chat_id(callback_query.message.chat.id)
-    pairs_str = ', '.join(user.crypto_pairs)
-    message_text = f'<b>Percentage Change:</b> {user.percent}%\n\n<b>Current tracking pairs:</b>\n<i>' \
-                   f'{pairs_str if pairs_str else "-"}</i>' if user else 'Tracking bar:'
+    message_text = 'Tracking bar:'
+    if user:
+        pairs_str = ', '.join(user.crypto_pairs)
+        message_text = f'<b>Percentage Change:</b> {user.percent}%\n\n<b>Current tracking pairs:</b>\n<i>' \
+                       f'{pairs_str if pairs_str else "-"}</i>'
     await callback_query.message.edit_text(message_text,
                                            reply_markup=inline_kb_track_prices,
                                            parse_mode=types.ParseMode.HTML)
