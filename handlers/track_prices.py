@@ -69,8 +69,8 @@ async def enter_and_add_pair(message: types.Message, gateway: Gateway, state: FS
                              f'<b>Current tracking pairs:</b>\n'
                              f'<i>{pairs_str if pairs_str else "-"}</i>', reply_markup=inline_kb_close,
                              parse_mode=types.ParseMode.HTML)
-    finally:
-        await state.finish()
+
+    await state.finish()
 
 
 async def enter_and_remove_pair(message: types.Message, gateway: Gateway, state: FSMContext):
