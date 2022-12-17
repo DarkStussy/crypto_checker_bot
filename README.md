@@ -1,6 +1,7 @@
 # DESCRIPTION
 
 Telegram bot to track the prices of cryptocurrencies. Bot notifies users of spikes and drops in monitored cryptocurrencies.
+Shows the entire list of cryptocurrency pairs that are available on the Binance crypto exchange in inline mode.
 
 Stack: aiogram, PostgreSQL (SQLAlchemy + asyncpg), aioschedule, aioredis.
 
