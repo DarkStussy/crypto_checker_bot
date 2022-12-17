@@ -6,4 +6,5 @@ async def set_default_commands(dp: Dispatcher):
         types.BotCommand('start', 'Start bot'),
         types.BotCommand('menu', 'Show menu'),
         types.BotCommand('check', 'Check changes since last tracking'),
+        types.BotCommand('getprice', 'Get price now'),
     ])
