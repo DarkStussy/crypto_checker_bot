@@ -1,15 +1,17 @@
 from aiogram import types, Dispatcher
 from aiogram.dispatcher import FSMContext
+from aiohttp import ClientSession
+
 from states.check_price import CheckPrice
 from states.search_pairs import TrackPairs
 from utils.functions import get_all_pairs
 
 
-async def inline_search_pairs(inline_query: types.InlineQuery, state: FSMContext):
+async def inline_search_pairs(inline_query: types.InlineQuery, client_session: ClientSession, state: FSMContext):
     async with state.proxy() as data:
         pairs = data.get('pairs')
         if pairs is None:
-            pairs = await get_all_pairs()
+            pairs = await get_all_pairs(client_session)
             data['pairs'] = pairs
 
         text = inline_query.query or 'BTCUSDT'

@@ -1,18 +1,19 @@
 import logging
 
 from aiogram import Dispatcher, types
+from aiohttp import ClientSession
 
 from database.api.gateways import Gateway
 from keyboard.inline import inline_kb_close
 from utils.functions import get_price_of_pairs
 
 
-async def check_prices(message: types.Message, gateway: Gateway):
+async def check_prices(message: types.Message, gateway: Gateway, client_session: ClientSession):
     message_text = ''
     user = await gateway.user.get_by_chat_id(message.chat.id)
 
     if user.crypto_pairs:
-        prices = await get_price_of_pairs(user.crypto_pairs)
+        prices = await get_price_of_pairs(client_session, user.crypto_pairs)
         for pair, price_now in zip(user.crypto_pairs.items(), prices):
             currency_pair = pair[0]
             price = pair[1]

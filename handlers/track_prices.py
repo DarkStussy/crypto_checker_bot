@@ -3,6 +3,7 @@ import logging
 from aiogram import types, Dispatcher
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import Text
+from aiohttp import ClientSession
 
 from database.api.gateways import Gateway
 from keyboard.inline import inline_kb_track_prices, inline_kb_close, inline_kb_back_to_check_prices
@@ -38,9 +39,10 @@ async def remove_pair(callback_query: types.CallbackQuery):
     await TrackPairs.remove_pair.set()
 
 
-async def enter_and_add_pair(message: types.Message, gateway: Gateway, state: FSMContext):
+async def enter_and_add_pair(message: types.Message, gateway: Gateway, client_session: ClientSession,
+                             state: FSMContext):
     new_pair = message.text
-    price = (await get_price_of_pairs([new_pair]))[0]
+    price = (await get_price_of_pairs(client_session, [new_pair]))[0]
     try:
         price = float(price)
     except Exception as e:

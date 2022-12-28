@@ -2,15 +2,16 @@ import asyncio
 import logging
 
 from aiogram import Bot, types
+from aiohttp import ClientSession
 
 from database.api.gateways import Gateway
 from database.models.user import User
 from utils.functions import get_price_of_pairs
 
 
-async def check_difference_of_pairs(bot: Bot, user: User, gateway: Gateway):
+async def check_difference_of_pairs(bot: Bot, user: User, gateway: Gateway, client_session: ClientSession):
     if user.crypto_pairs:
-        prices = await get_price_of_pairs(user.crypto_pairs)
+        prices = await get_price_of_pairs(client_session, user.crypto_pairs)
         for pair, price_now in zip(user.crypto_pairs.items(), prices):
             try:
                 price_now = float(price_now)
@@ -33,8 +34,8 @@ async def check_difference_of_pairs(bot: Bot, user: User, gateway: Gateway):
     return
 
 
-async def check_user_pair(bot: Bot, db_session):
+async def check_user_pair(bot: Bot, db_session, client_session: ClientSession):
     gateway = Gateway(db_session)
     users = await gateway.user.get_all_users()
     for user in users:
-        asyncio.create_task(check_difference_of_pairs(bot, user, gateway))
+        asyncio.create_task(check_difference_of_pairs(bot, user, gateway, client_session))

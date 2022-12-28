@@ -1,6 +1,7 @@
 import asyncio
 import logging
 
+import aiohttp
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.contrib.fsm_storage.redis import RedisStorage2
 from sqlalchemy.orm import sessionmaker
@@ -14,6 +15,7 @@ from aiogram import Dispatcher, Bot
 
 from filters.admin import AdminFilter
 from handlers import setup_handlers
+from middlewares.client_session import ClientSessionMiddleware
 from middlewares.database import DatabaseMiddleware
 from middlewares.role import RoleMiddleware
 from middlewares.throttling import ThrottlingMiddleware
@@ -35,11 +37,6 @@ async def create_engine(host: str, password: str, username: str, database: str) 
     return engine
 
 
-def create_async_session(engine: AsyncEngine):
-    async_session = sessionmaker(engine, expire_on_commit=False, class_=AsyncSession)
-    return async_session
-
-
 async def main():
     logging.basicConfig(filename='app.log', filemode='w', format='%(asctime)s | %(name)s - %(levelname)s - %(message)s')
 
@@ -50,7 +47,9 @@ async def main():
         storage = MemoryStorage()
 
     engine = await create_engine(config.db.host, config.db.password, config.db.username, config.db.database)
-    db_session = create_async_session(engine)
+    db_session = sessionmaker(engine, expire_on_commit=False, class_=AsyncSession)
+
+    client_session = aiohttp.ClientSession()
 
     bot = Bot(token=config.bot.token)
     dp = Dispatcher(bot, storage=storage)
@@ -58,6 +57,7 @@ async def main():
     dp.middleware.setup(ThrottlingMiddleware(limit=1))
     dp.middleware.setup(RoleMiddleware(config.bot.admins))
     dp.middleware.setup(DatabaseMiddleware(db_session))
+    dp.middleware.setup(ClientSessionMiddleware(client_session))
 
     dp.filters_factory.bind(AdminFilter)
 
@@ -66,9 +66,8 @@ async def main():
     await set_default_commands(dp)
     await notify_admins(dp, config.bot.admins)
 
-    asyncio.create_task(scheduler(bot, db_session))
+    asyncio.create_task(scheduler(bot, db_session, client_session))
 
-    # start
     try:
         logging.warning('Bot started!')
         await dp.start_polling()
@@ -77,10 +76,11 @@ async def main():
         await dp.storage.wait_closed()
         await (await bot.get_session()).close()
         await engine.dispose()
+        await client_session.close()
 
 
 if __name__ == '__main__':
     try:
         asyncio.run(main())
     except (KeyboardInterrupt, SystemExit):
-        logging.error("Bot stopped!")
+        logging.warning("Bot stopped!")

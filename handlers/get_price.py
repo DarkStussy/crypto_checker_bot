@@ -3,6 +3,7 @@ import logging
 from aiogram import types, Dispatcher
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import Text
+from aiohttp import ClientSession
 
 from keyboard.inline import inline_kb_back_to_menu, inline_kb_close
 from states.check_price import CheckPrice
@@ -25,9 +26,9 @@ async def get_price_command(message: types.Message):
     await CheckPrice.cryptocurrency.set()
 
 
-async def enter_pair(message: types.Message, state: FSMContext):
+async def enter_pair(message: types.Message, client_session: ClientSession, state: FSMContext):
     pair = str(message.text)
-    price = (await get_price_of_pairs([pair]))[0]
+    price = (await get_price_of_pairs(client_session, [pair]))[0]
 
     try:
         await message.answer(f'<b>{pair} price:</b> <i>{float(price):g}</i>', reply_markup=inline_kb_close,
