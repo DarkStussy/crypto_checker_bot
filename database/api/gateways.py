@@ -31,7 +31,7 @@ class UserGateway(BaseGateway):
             user = await s.get(User, chat_id)
         return user
 
-    async def create_new_user(self, chat_id: int, crypto_pairs: list) -> User:
+    async def create(self, chat_id: int, crypto_pairs: list) -> User:
         async with self.session() as s:
             user = await s.merge(User(id=chat_id, crypto_pairs=crypto_pairs))
             await s.commit()

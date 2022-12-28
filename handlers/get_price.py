@@ -3,6 +3,7 @@ import logging
 from aiogram import types, Dispatcher
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import Text
+from aiogram.utils.exceptions import BadRequest
 from aiohttp import ClientSession
 
 from keyboard.inline import inline_kb_back_to_menu, inline_kb_close
@@ -27,13 +28,13 @@ async def get_price_command(message: types.Message):
 
 
 async def enter_pair(message: types.Message, client_session: ClientSession, state: FSMContext):
-    pair = str(message.text)
+    pair = str(message.text.upper())
     price = (await get_price_of_pairs(client_session, [pair]))[0]
 
     try:
         await message.answer(f'<b>{pair} price:</b> <i>{float(price):g}</i>', reply_markup=inline_kb_close,
                              parse_mode=types.ParseMode.HTML)
-    except Exception as e:
+    except (ValueError, TypeError, BadRequest) as e:
         logging.error(f'Error: {type(e).__name__}, file: {__file__}, line: {e.__traceback__.tb_lineno}')
         await message.answer('There were some problems, please try again later.')
     finally:

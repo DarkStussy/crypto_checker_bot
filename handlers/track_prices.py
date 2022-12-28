@@ -41,12 +41,11 @@ async def remove_pair(callback_query: types.CallbackQuery):
 
 async def enter_and_add_pair(message: types.Message, gateway: Gateway, client_session: ClientSession,
                              state: FSMContext):
-    new_pair = message.text
+    new_pair = message.text.upper()
     price = (await get_price_of_pairs(client_session, [new_pair]))[0]
     try:
         price = float(price)
-    except Exception as e:
-        logging.error(f'Error: {type(e).__name__}, file: {__file__}, line: {e.__traceback__.tb_lineno}')
+    except (ValueError, TypeError):
         await message.answer('There were some problems, please try again later.')
     else:
         user = await gateway.user.get_by_chat_id(message.chat.id)
@@ -54,6 +53,7 @@ async def enter_and_add_pair(message: types.Message, gateway: Gateway, client_se
             if new_pair in user.crypto_pairs:
                 return await message.answer('The pair is tracking at the moment!')
             elif len(user.crypto_pairs) >= 50:
+                await state.finish()
                 return await message.answer('Max 50 pairs can be tracking')
             try:
                 user.crypto_pairs[new_pair] = price
@@ -63,7 +63,7 @@ async def enter_and_add_pair(message: types.Message, gateway: Gateway, client_se
                 await state.finish()
                 return await message.answer('There were some problems, please try again later.')
         else:
-            user = await gateway.user.create_new_user(message.chat.id, {new_pair: price})
+            user = await gateway.user.create(message.chat.id, {new_pair: price})
 
         pairs_str = ', '.join(user.crypto_pairs)
         await message.answer(f'Tracking of this cryptocurrency pair has successfully started!\n'
@@ -71,12 +71,11 @@ async def enter_and_add_pair(message: types.Message, gateway: Gateway, client_se
                              f'<b>Current tracking pairs:</b>\n'
                              f'<i>{pairs_str if pairs_str else "-"}</i>', reply_markup=inline_kb_close,
                              parse_mode=types.ParseMode.HTML)
-
     await state.finish()
 
 
 async def enter_and_remove_pair(message: types.Message, gateway: Gateway, state: FSMContext):
-    new_pair = message.text
+    new_pair = message.text.upper()
     user = await gateway.user.get_by_chat_id(message.chat.id)
     if user:
         try:
