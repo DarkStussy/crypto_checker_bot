@@ -5,19 +5,47 @@ from typing import Any
 from aiohttp import ClientSession
 
 
-async def get_price_task(session: ClientSession, currency_url: str) -> typing.Union[str, None]:
+class BinanceAPIError(Exception):
+    def __init__(self, code: int, message: str = 'Unknown request error'):
+        self.message = message
+        self.code = code
+        super().__init__(self.message)
+
+
+async def get_price_task(session: ClientSession, currency_url: str) -> dict:
     async with session.get(currency_url) as resp:
-        currency_price = await resp.json()
-        return currency_price.get('price')
+        data = await resp.json()
+        status_code = data.get('code')
+        if status_code is None:
+            return data
+
+        if status_code == -1003:
+            raise BinanceAPIError(status_code, 'Too many requests')
+        elif status_code == -1121:
+            raise BinanceAPIError(status_code, 'Invalid symbol')
+        else:
+            raise BinanceAPIError(status_code)
 
 
-async def get_price_of_pairs(session: ClientSession, pairs: list[str]) -> \
-        tuple[BaseException | Any, ...]:
-    coroutines = []
+async def get_price_of_pairs(session: ClientSession, pairs: list[str]) -> dict:
+    pending_tasks = []
+    pairs_result = {}
     for pair in pairs:
         currency_url = f'https://api.binance.com/api/v3/ticker/price?symbol={pair}'
-        coroutines.append(get_price_task(session, currency_url))
-    return await asyncio.gather(*coroutines)
+        pending_tasks.append(asyncio.create_task(get_price_task(session, currency_url)))
+    while pending_tasks:
+        done_tasks, pending_tasks = await asyncio.wait(pending_tasks,
+                                                       return_when=asyncio.FIRST_COMPLETED)
+        for done_task in done_tasks:
+            exception = done_task.exception()
+            if exception is None:
+                task_result = done_task.result()
+                pairs_result[task_result['symbol']] = task_result['price']
+            elif exception.code == -1003:
+                [task.cancel() for task in pending_tasks]
+                return pairs_result
+
+    return pairs_result
 
 
 async def get_all_pairs(session: ClientSession) -> tuple[Any]:

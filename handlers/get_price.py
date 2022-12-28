@@ -28,11 +28,11 @@ async def get_price_command(message: types.Message):
 
 
 async def enter_pair(message: types.Message, client_session: ClientSession, state: FSMContext):
-    pair = str(message.text.upper())
-    price = (await get_price_of_pairs(client_session, [pair]))[0]
-
+    pair_name = str(message.text.upper())
+    pair = await get_price_of_pairs(client_session, [pair_name])
+    price = pair.get(pair_name)
     try:
-        await message.answer(f'<b>{pair} price:</b> <i>{float(price):g}</i>', reply_markup=inline_kb_close,
+        await message.answer(f'<b>{pair_name} price:</b> <i>{float(price):g}</i>', reply_markup=inline_kb_close,
                              parse_mode=types.ParseMode.HTML)
     except (ValueError, TypeError, BadRequest) as e:
         logging.error(f'Error: {type(e).__name__}, file: {__file__}, line: {e.__traceback__.tb_lineno}')

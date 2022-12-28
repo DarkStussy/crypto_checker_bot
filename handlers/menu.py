@@ -2,6 +2,7 @@ from aiogram import types, Dispatcher
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import Text
 from aiogram.types import ChatType
+from aiogram.utils.exceptions import MessageCantBeDeleted
 
 from keyboard.inline import inline_kb_menu
 
@@ -12,8 +13,12 @@ async def send_menu(message: types.Message, state: FSMContext):
 
 
 async def close(callback_query: types.CallbackQuery, state: FSMContext):
-    await callback_query.message.delete()
-    await state.finish()
+    try:
+        await callback_query.message.delete()
+    except MessageCantBeDeleted:
+        pass
+    else:
+        await state.finish()
 
 
 async def back_to_menu(callback_query: types.CallbackQuery, state: FSMContext):

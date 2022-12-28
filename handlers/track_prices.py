@@ -6,7 +6,7 @@ from aiogram.dispatcher.filters import Text
 from aiohttp import ClientSession
 
 from database.api.gateways import Gateway
-from keyboard.inline import inline_kb_track_prices, inline_kb_close, inline_kb_back_to_check_prices
+from keyboard.inline import inline_kb_track_prices, inline_kb_close, inline_kb_back
 from states.search_pairs import TrackPairs
 from utils.functions import get_price_of_pairs
 
@@ -27,7 +27,7 @@ async def add_pair(callback_query: types.CallbackQuery):
     bot = await callback_query.bot.get_me()
     await callback_query.message.edit_text(f'Enter cryptocurrency pair.\n'
                                            f'Use <code>@{bot.username}</code> to view all pairs',
-                                           reply_markup=inline_kb_back_to_check_prices, parse_mode=types.ParseMode.HTML)
+                                           reply_markup=inline_kb_back, parse_mode=types.ParseMode.HTML)
     await TrackPairs.add_pair.set()
 
 
@@ -35,14 +35,15 @@ async def remove_pair(callback_query: types.CallbackQuery):
     bot = await callback_query.bot.get_me()
     await callback_query.message.edit_text(f'Enter cryptocurrency pair.\n'
                                            f'Use <code>@{bot.username}</code> to view all pairs',
-                                           reply_markup=inline_kb_back_to_check_prices, parse_mode=types.ParseMode.HTML)
+                                           reply_markup=inline_kb_back, parse_mode=types.ParseMode.HTML)
     await TrackPairs.remove_pair.set()
 
 
 async def enter_and_add_pair(message: types.Message, gateway: Gateway, client_session: ClientSession,
                              state: FSMContext):
     new_pair = message.text.upper()
-    price = (await get_price_of_pairs(client_session, [new_pair]))[0]
+    pair = await get_price_of_pairs(client_session, [new_pair])
+    price = pair.get(new_pair)
     try:
         price = float(price)
     except (ValueError, TypeError):
@@ -100,7 +101,7 @@ async def enter_and_remove_pair(message: types.Message, gateway: Gateway, state:
 
 async def change_percent(callback_query: types.CallbackQuery):
     await callback_query.message.edit_text('Enter percentage change in tracking:',
-                                           reply_markup=inline_kb_back_to_check_prices)
+                                           reply_markup=inline_kb_back)
     await TrackPairs.change_percent.set()
 
 
@@ -119,7 +120,7 @@ async def enter_percent(message: types.Message, gateway: Gateway, state: FSMCont
         await state.finish()
 
 
-async def back_to_check_prices(callback_query: types.CallbackQuery, gateway: Gateway, state: FSMContext):
+async def back_to_track_prices(callback_query: types.CallbackQuery, gateway: Gateway, state: FSMContext):
     await state.finish()
     await track_prices(callback_query, gateway)
 
@@ -136,4 +137,4 @@ def register_track_prices(dp: Dispatcher):
     dp.register_callback_query_handler(add_pair, Text('add_pair'))
     dp.register_callback_query_handler(remove_pair, Text('remove_pair'))
     dp.register_callback_query_handler(change_percent, Text('change_percent'))
-    dp.register_callback_query_handler(back_to_check_prices, Text('back_to_check_prices'), state='*')
+    dp.register_callback_query_handler(back_to_track_prices, Text('back'), state='*')

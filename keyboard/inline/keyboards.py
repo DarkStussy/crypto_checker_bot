@@ -16,5 +16,5 @@ inline_kb_track_prices = InlineKeyboardMarkup().add(inline_add_pair, inline_remo
 
 inline_kb_back_to_menu = InlineKeyboardMarkup().add(inline_back_to_menu)
 
-inline_back_to_check_prices = InlineKeyboardButton('Back', callback_data='back_to_check_prices')
-inline_kb_back_to_check_prices = InlineKeyboardMarkup().add(inline_back_to_check_prices)
+inline_back = InlineKeyboardButton('Back', callback_data='back')
+inline_kb_back = InlineKeyboardMarkup().add(inline_back)

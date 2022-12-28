@@ -49,10 +49,10 @@ async def main():
     engine = await create_engine(config.db.host, config.db.password, config.db.username, config.db.database)
     db_session = sessionmaker(engine, expire_on_commit=False, class_=AsyncSession)
 
-    client_session = aiohttp.ClientSession()
-
     bot = Bot(token=config.bot.token)
     dp = Dispatcher(bot, storage=storage)
+
+    client_session = await bot.get_session()
 
     dp.middleware.setup(ThrottlingMiddleware(limit=1))
     dp.middleware.setup(RoleMiddleware(config.bot.admins))
@@ -74,13 +74,12 @@ async def main():
     finally:
         await dp.storage.close()
         await dp.storage.wait_closed()
-        await (await bot.get_session()).close()
-        await engine.dispose()
         await client_session.close()
+        await engine.dispose()
 
 
 if __name__ == '__main__':
     try:
         asyncio.run(main())
     except (KeyboardInterrupt, SystemExit):
-        logging.warning("Bot stopped!")
+        logging.warning('Bot stopped!')
