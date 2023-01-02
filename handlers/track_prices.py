@@ -7,7 +7,7 @@ from aiohttp import ClientSession
 
 from database.api.gateways import Gateway
 from keyboard.inline import inline_kb_track_prices, inline_kb_close, inline_kb_back
-from states.search_pairs import TrackPairs
+from states.track_pairs import TrackPairs
 from utils.functions import get_price_of_pairs
 
 

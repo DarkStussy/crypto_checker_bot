@@ -31,7 +31,7 @@ def load_config():
 
     return Config(bot=BotConfig(
         token=os.getenv('BOT_TOKEN'),
-        admins=(12345,),  # admins tokens here
+        admins=(12345,),  # admins id here
         use_redis=True),
         db=DatabaseConfig(
             host=os.getenv('PG_HOST'),

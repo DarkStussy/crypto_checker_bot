@@ -3,7 +3,7 @@ from aiogram.dispatcher import FSMContext
 from aiohttp import ClientSession
 
 from states.check_price import CheckPrice
-from states.search_pairs import TrackPairs
+from states.track_pairs import TrackPairs
 from utils.functions import get_all_pairs
 
 

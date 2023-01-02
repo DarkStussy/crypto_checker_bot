@@ -1,5 +1,4 @@
 import asyncio
-import logging
 
 from aiogram import Bot, types
 from aiohttp import ClientSession
@@ -23,7 +22,7 @@ async def check_difference_of_pairs(bot: Bot, user: User, gateway: Gateway, clie
         price_now = pairs.get(currency_name)
         if price_now:
             price_now = float(price_now)
-            if abs(100.0 - (price * 100 / price_now)) > user.percent:
+            if abs(100.0 - (price * 100 / price_now)) >= user.percent:
                 user.crypto_pairs[currency_name] = price_now
                 await gateway.merge(user)
                 await bot.send_message(chat_id=user.id, text=f'<b>WARNING:</b>\n'

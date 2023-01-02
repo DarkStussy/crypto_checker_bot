@@ -1,5 +1,4 @@
 import asyncio
-import typing
 from typing import Any
 
 from aiohttp import ClientSession
