@@ -12,4 +12,5 @@ async def notify_admins(dp: Dispatcher, admins: typing.Sequence[int]):
         except ChatNotFound:
             pass
         except Exception as e:
-            logging.error(f'Error: {type(e).__name__}, file: {__file__}, line: {e.__traceback__.tb_lineno}')
+            logging.error(f'Error: {type(e).__name__}, file: {__file__},'
+                          f' line: {e.__traceback__.tb_lineno}')

@@ -7,7 +7,9 @@ from states.track_pairs import TrackPairs
 from utils.functions import get_all_pairs
 
 
-async def inline_search_pairs(inline_query: types.InlineQuery, client_session: ClientSession, state: FSMContext):
+async def inline_search_pairs(inline_query: types.InlineQuery,
+                              client_session: ClientSession,
+                              state: FSMContext):
     data = await state.get_data()
     pairs = data.get('pairs')
     if pairs is None:
@@ -31,10 +33,12 @@ async def inline_search_pairs(inline_query: types.InlineQuery, client_session: C
             )
         ) for pair in search_list if text in pair]
         if len(results) < 50:
-            await inline_query.answer(results, is_personal=True, next_offset='',
+            await inline_query.answer(results, is_personal=True,
+                                      next_offset='',
                                       cache_time=10)
         else:
-            await inline_query.answer(results[query_offset:query_offset + 50], is_personal=True,
+            await inline_query.answer(results[query_offset:query_offset + 50],
+                                      is_personal=True,
                                       next_offset=str(query_offset + 50),
                                       cache_time=10)
     else:
@@ -50,4 +54,6 @@ async def inline_search_pairs(inline_query: types.InlineQuery, client_session: C
 def register_inline_pairs(dp: Dispatcher):
     # inline handlers
     dp.register_inline_handler(inline_search_pairs,
-                               state=[TrackPairs.add_pair, TrackPairs.remove_pair, CheckPrice.cryptocurrency])
+                               state=[TrackPairs.add_pair,
+                                      TrackPairs.remove_pair,
+                                      CheckPrice.cryptocurrency])
