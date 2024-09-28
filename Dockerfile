@@ -6,4 +6,9 @@ WORKDIR /src
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
-CMD ["python3", "-m", "crypto_checker"]
+
+WORKDIR /
+COPY start.sh /start.sh
+RUN chmod +x /start.sh
+
+WORKDIR /src

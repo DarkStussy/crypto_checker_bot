@@ -11,8 +11,3 @@ services:
       - DB_USERNAME=
       - DB_PASSWORD=
       - DB_DATABASE=
-    logging:
-      driver: fluentd
-      options:
-        fluentd-address: 0.0.0.0:24224
-        tag: app.logs
