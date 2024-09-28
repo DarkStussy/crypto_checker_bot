@@ -7,29 +7,23 @@ LINK: https://t.me/crypto_ds_bot
 
 # How to use
 
-### 1. Create and activate virtual environment
+### 1. Prepare your environment:
 
-### 2. Then install requirements
+Ensure you have Docker and Docker Compose installed.
 
-```
-python install -r requirements.txt
-```
-
-### 3. Rename .env.example to .env and edit file
+### 2. Set up environment variables in docker-compose.yaml:
 
 ```
-BOT_TOKEN=  <-(Here bot token from BotFather
-
-PG_HOST=localhost
-PG_USERNAME=postgres
-PG_PASSWORD= <-(your postgres password)
-PG_DATABASE= <-(here database name)
+BOT_TOKEN=your_bot_token
+ADMINS=123456789
+PG_HOST=your_host
+PG_USERNAME=your_db_username
+PG_PASSWORD=your_db_password
+PG_DATABASE=your_db_name
 ```
 
-### 4. Change admin IDs in config.py (line 34)
-
-### 5. Now start bot to check
+### 3. Build and start the bot:
 
 ```
-python app.py
+docker compose up -d --build
 ```
