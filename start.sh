@@ -1,5 +1,5 @@
 #!/bin/sh
 
-# alembic upgrade head
+alembic upgrade head
 
 exec python3 -m crypto_checker
