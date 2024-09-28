@@ -1,0 +1,18 @@
+services:
+  crypto_checker_bot:
+    restart: always
+    container_name: "crypto_checker_bot"
+    build: .
+    entrypoint: /start.sh
+    environment:
+      - BOT_TOKEN=
+      - ADMINS=
+      - DB_HOST=
+      - DB_USERNAME=
+      - DB_PASSWORD=
+      - DB_DATABASE=
+    logging:
+      driver: fluentd
+      options:
+        fluentd-address: 0.0.0.0:24224
+        tag: app.logs
