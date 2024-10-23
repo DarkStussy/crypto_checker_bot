@@ -24,4 +24,5 @@ jobs:
           python-version: '3.12'
       - run: |
           pip install flake8==7.1.1
+      - run: |
           flake8 ./crypto_checker
