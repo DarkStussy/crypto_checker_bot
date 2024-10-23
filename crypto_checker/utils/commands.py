@@ -11,8 +11,8 @@ async def set_commands(bot: Bot):
         commands=[
             BotCommand(command="start", description="Start bot"),
             BotCommand(command="menu", description="Show menu"),
-            BotCommand(command="check", description="Check changes since last tracking"),
-            BotCommand(command="get_price", description="Get current price. USAGE: /get_price BTCUSDT"),
+            BotCommand(command="check", description="Check price changes since last request"),
+            BotCommand(command="get_price", description="Get current price of cryptocurrency pair"),
         ],
         scope=BotCommandScopeAllPrivateChats(),
     )

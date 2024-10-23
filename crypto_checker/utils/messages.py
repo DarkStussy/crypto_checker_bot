@@ -5,7 +5,7 @@ from crypto_checker.core.models import dto
 
 def get_tracking_bar_message(percent: Decimal, pairs: list[dto.CryptoPair]):
     return (
-        f"<b>Tracking bar</b>:\n<b>Percentage Change:</b> {percent.normalize():g}%\n"
+        f"💻 <b>Tracking bar</b>:\n<b>Percentage Change:</b> {percent.normalize():g}%\n"
         f"<b>Current tracking pairs:</b>\n<i>{', '.join([pair.name for pair in pairs]) or '-'}</i>"
     )
 
