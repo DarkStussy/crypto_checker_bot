@@ -7,8 +7,7 @@ from .models import Config, BotConfig, DbConfig, SchedulerConfig
 def load_config() -> Config:
     return Config(
         bot=BotConfig(
-            token=env.str("BOT_TOKEN"),
-            admins=list(map(int, env.list("ADMINS"))),
+            token=env.str("BOT_TOKEN"), admins=list(map(int, env.list("ADMINS"))),
         ),
         db=(
             DbConfig.from_url(
