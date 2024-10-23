@@ -10,9 +10,9 @@ exclude = '''
         \.tox/|
         \.venv/|
         \venv/|
-        migrations/|
         _build/|
         buck-out/|
         build/|
-        dist/
+        dist/|
+        migrations
     )'''
