@@ -25,4 +25,4 @@ jobs:
       - run: |
           pip install flake8==7.1.1
       - run: |
-          flake8 ./crypto_checker --exit-zero
+          flake8 ./crypto_checker
