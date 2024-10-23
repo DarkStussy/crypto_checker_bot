@@ -12,7 +12,7 @@ jobs:
         with:
           options: "--check"
           src: "./crypto_checker"
-          use_pyproject: true
+          version: "~= 24.3"
 
   flake8:
     runs-on: ubuntu-latest
