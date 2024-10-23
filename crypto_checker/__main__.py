@@ -24,7 +24,7 @@ async def main():
     dispatcher = await create_dispatcher(config, db_provider, binance_client)
 
     try:
-        await set_commands(bot)
+        await set_commands(bot, test)
         await notify_admins(bot, config.bot.admins)
         run_scheduler(bot, db_provider, binance_client, config.scheduler)
 
