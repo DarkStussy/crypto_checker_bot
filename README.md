@@ -16,10 +16,10 @@ Ensure you have Docker and Docker Compose installed.
 ```
 BOT_TOKEN=your_bot_token
 ADMINS=123456789
-PG_HOST=your_host
-PG_USERNAME=your_db_username
-PG_PASSWORD=your_db_password
-PG_DATABASE=your_db_name
+DB_HOST=your_host
+DB_USERNAME=your_db_username
+DB_PASSWORD=your_db_password
+DB_DATABASE=your_db_name
 ```
 
 ### 3. Build and start the bot:
