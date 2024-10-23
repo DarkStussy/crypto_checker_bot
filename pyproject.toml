@@ -14,5 +14,5 @@ exclude = '''
         buck-out/|
         build/|
         dist/|
-        migrations
+        migrations/
     )'''
