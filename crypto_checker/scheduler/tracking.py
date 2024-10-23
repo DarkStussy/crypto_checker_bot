@@ -41,6 +41,6 @@ async def check_users_pairs(bot: Bot, db_provider: DbProvider, binance_client: B
 
     for user_id, old_pairs in old_pairs_map.items():
         await bot.send_message(
-            chat_id=user.id,
+            chat_id=user_id,
             text="⚠️ <b>ALERT</b> ⚠️\n\n" + get_prices_changes_message(old_pairs, all_pairs),
         )

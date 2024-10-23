@@ -14,10 +14,10 @@ async def delete_message(message: Message) -> bool:
 async def edit_or_send_message_by_id(
     bot: Bot,
     chat_id: int | str,
-    message_id: int | str,
+    message_id: int,
     text: str,
     reply_markup: InlineKeyboardMarkup | None = None,
-) -> Message | None:
+) -> Message | bool | None:
     try:
         return await bot.edit_message_text(chat_id=chat_id, message_id=message_id, text=text, reply_markup=reply_markup)
     except TelegramBadRequest as e:
