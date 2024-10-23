@@ -11,9 +11,9 @@ exclude = '''
         \.tox/|
         \.venv/|
         \venv/|
-        \migrations/
+        migrations/|
         _build/|
         buck-out/|
         build/|
-        dist/|
+        dist/
     )'''
