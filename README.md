@@ -3,7 +3,6 @@
 Telegram bot to track the prices of cryptocurrencies. Bot notifies users of spikes and drops in monitored
 cryptocurrencies.
 Shows the entire list of cryptocurrency pairs that are available on the Binance crypto exchange in inline mode.
-LINK: https://t.me/crypto_ds_bot
 
 # How to use
 
